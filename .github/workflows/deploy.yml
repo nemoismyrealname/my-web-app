@@ -18,8 +18,27 @@ jobs:
           sudo apt-get install -y tidy
           tidy -e index.html || true
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << EOF
+            # Убедись, что Docker и Docker Compose установлены на сервере
+            if ! command -v docker &> /dev/null
+            then
+                echo "Docker не установлен, устанавливаем..."
+                sudo apt-get install -y docker.io
+            fi
+            if ! command -v docker-compose &> /dev/null
+            then
+                echo "Docker Compose не установлен, устанавливаем..."
+                sudo apt-get install -y docker-compose
+            fi
+
+            # Переключаемся в нужную директорию и обновляем код
+            cd /var/www/my-web-app
+            git pull origin main
+
+            # Собираем и перезапускаем контейнеры
+            docker build -t my-web-app .
+            docker-compose down
+            docker-compose up -d
+          EOF
