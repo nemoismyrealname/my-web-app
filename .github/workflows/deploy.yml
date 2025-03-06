@@ -1,4 +1,4 @@
-name: CI/CD
+name: Deploy to VPS
 
 on:
   push:
@@ -6,44 +6,31 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH key
+      - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Validate HTML
-        run: |
-          sudo apt-get install -y tidy
-          tidy -e index.html || true
-
       - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << EOF
-            # Убедись, что Docker и Docker Compose установлены на сервере
-            if ! command -v docker &> /dev/null
-            then
-                echo "Docker не установлен, устанавливаем..."
-                sudo apt-get install -y docker.io
-            fi
-            if ! command -v docker-compose &> /dev/null
-            then
-                echo "Docker Compose не установлен, устанавливаем..."
-                sudo apt-get install -y docker-compose
-            fi
-
             # Переключаемся в нужную директорию и обновляем код
-            cd /var/www/my-web-app
-            git pull origin main
+            cd /var/www/my-web-app || exit 1
+            git pull origin main || exit 1
 
-            # Собираем и перезапускаем контейнеры
-            docker build -t my-web-app .
-            docker-compose down
-            docker-compose up -d
+            # Собираем образ
+            docker build -t my-web-app . || exit 1
+
+            # Останавливаем и удаляем старый контейнер, если он был запущен
+            docker ps -q --filter "name=my-web-app" | xargs -r docker stop | xargs -r docker rm || exit 1
+
+            # Запускаем новый контейнер
+            docker run -d --name my-web-app -p 80:80 my-web-app || exit 1
           EOF
