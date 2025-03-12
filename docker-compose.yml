@@ -9,7 +9,4 @@ services:
       - "80:80"
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      retries: 3
-      timeout: 10s
+      disable: true
