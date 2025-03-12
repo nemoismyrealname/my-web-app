@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: my-web-app
+    image: my-web-app
+    build: .
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
