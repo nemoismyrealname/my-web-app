@@ -1,7 +1,7 @@
 document.getElementById('changeTextButton').addEventListener('click', function () {
     document.getElementById('textChange').textContent = "You clicked the button!";
 
-    fetch('http://localhost:3000/api/notify', {
+    fetch('http://backend:3000/api/notify', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
