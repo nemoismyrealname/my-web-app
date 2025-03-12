@@ -1,0 +1,19 @@
+{
+  "name": "my-web-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nemoismyrealname/my-web-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nemoismyrealname/my-web-app/issues"
+  },
+  "homepage": "https://github.com/nemoismyrealname/my-web-app#readme"
+}
