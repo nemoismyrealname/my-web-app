@@ -1,25 +1,23 @@
 # Используем образ Node.js 14
 FROM node:14
 
-# Устанавливаем рабочую директорию для приложения
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
 # Копируем package.json и package-lock.json из корня проекта
 COPY package.json package-lock.json ./
 
-# Устанавливаем зависимости из package.json, который в корне
+# Устанавливаем зависимости для проекта
 RUN npm install
 
-# Копируем package.json и package-lock.json из backend в папку /app/backend
-COPY backend/package.json backend/package-lock.json ./backend/
-
-# Переходим в рабочую директорию backend
-WORKDIR /app/backend
+# Копируем файлы из backend в контейнер
+COPY backend/ ./backend/
 
 # Устанавливаем зависимости для backend
+WORKDIR /app/backend
 RUN npm install
 
-# Копируем остальные файлы (например, server.js) в рабочую директорию
+# Копируем оставшиеся файлы
 COPY backend/server.js /app/backend/
 
 # Запускаем приложение

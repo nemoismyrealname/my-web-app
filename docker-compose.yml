@@ -2,18 +2,26 @@ version: '3'
 services:
   web:
     build:
-      context: ./web
+      context: .
       dockerfile: web/Dockerfile
     ports:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - my-network
 
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: backend/Dockerfile
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
