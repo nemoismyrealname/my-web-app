@@ -2,11 +2,10 @@ version: '3.8'
 
 services:
   web:
-    container_name: my-web-app
     image: my-web-app
     build: .
     ports:
       - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html
     restart: always
-    healthcheck:
-      disable: true
