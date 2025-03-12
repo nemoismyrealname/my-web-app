@@ -1,4 +1,4 @@
 FROM nginx:alpine
-COPY ./index.html /usr/share/nginx/html/
-COPY ./styles.css /usr/share/nginx/html/
-COPY ./script.js /usr/share/nginx/html/
+COPY /web/index.html /usr/share/nginx/html/
+COPY /web/styles.css /usr/share/nginx/html/
+COPY /web/script.js /usr/share/nginx/html/
