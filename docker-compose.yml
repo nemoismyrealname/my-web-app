@@ -2,9 +2,8 @@ version: '3.8'
 
 services:
   web:
-    image: nginx:latest
-    container_name: my-web-app
     build: .
+    container_name: my-web-app
     volumes:
       - ./index.html:/usr/share/nginx/html/index.html
     ports:
