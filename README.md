@@ -1,2 +1,6 @@
+# # # # # # # 
 # my-web-app
-# copyright © nemo lesni40k 
+# copyleft © nemo lesni40k
+# usage_(172.233.44.85:80)
+# # # # # # # 
+

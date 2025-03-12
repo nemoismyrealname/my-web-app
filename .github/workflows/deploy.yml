@@ -20,17 +20,26 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << EOF
-            # Переключаемся в нужную директорию и обновляем код
-            cd /var/www/my-web-app || exit 1
-            git pull origin main || exit 1
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+            set -e  # Остановить скрипт при ошибке
+            
+            echo "🔄 Переход в директорию проекта..."
+            cd /var/www/my-web-app || { echo "❌ Ошибка: Директория не найдена!"; exit 1; }
+            
+            echo "📥 Обновление кода..."
+            git pull origin main || { echo "❌ Ошибка при обновлении кода"; exit 1; }
 
-            # Собираем образ
-            docker build -t my-web-app . || exit 1
+            echo "🐳 Сборка Docker-образа..."
+            docker build --pull -t my-web-app . || { echo "❌ Ошибка при сборке Docker-образа"; exit 1; }
 
-            # Останавливаем и удаляем старый контейнер, если он был запущен
-            docker ps -q --filter "name=my-web-app" | xargs -r docker stop | xargs -r docker rm || exit 1
+            echo "🛑 Остановка старого контейнера (если запущен)..."
+            docker ps -q --filter "name=my-web-app" | xargs -r docker stop || true
 
-            # Запускаем новый контейнер
-            docker run -d --name my-web-app -p 80:80 my-web-app || exit 1
+            echo "🗑️ Удаление старого контейнера..."
+            docker ps -aq --filter "name=my-web-app" | xargs -r docker rm || true
+
+            echo "🚀 Запуск нового контейнера..."
+            docker run -d --name my-web-app -p 80:80 my-web-app || { echo "❌ Ошибка при запуске контейнера"; exit 1; }
+
+            echo "✅ Деплой успешно завершён!"
           EOF
