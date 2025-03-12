@@ -3,6 +3,7 @@ services:
   web:
     build:
       context: ./web
+      dockerfile: web/Dockerfile
     ports:
       - "80:80"
     depends_on:
@@ -11,6 +12,7 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: backend/Dockerfile
     ports:
       - "3000:3000"
     environment:
