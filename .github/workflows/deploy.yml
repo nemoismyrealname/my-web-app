@@ -25,6 +25,8 @@ jobs:
             cd /var/www/my-web-app || { echo "❌ Ошибка: Директория не найдена!"; exit 1; }
             git pull origin main || { echo "❌ Ошибка при обновлении кода"; exit 1; }
 
+            echo "❌ Удаление старого контейнера.."
+            docker-compose down
             echo "🚀 Запуск контейнеров через Docker Compose..."
             docker-compose up -d --build || { echo "❌ Ошибка при запуске Docker Compose"; exit 1; }
 
