@@ -6,5 +6,7 @@ services:
     container_name: my-web-app
     volumes:
       - ./index.html:/usr/share/nginx/html/index.html
+      - ./styles.css:/usr/share/nginx/html/styles.css
+      - ./script.js:/usr/share/nginx/html/script.js
     ports:
       - "80:80"
